@@ -1,5 +1,7 @@
 <app-card>
-  <h1 ngProjectAs="header">test</h1>
+  <app-copied-content class="w-100 d-flex justify-center" ngProjectAs="header">
+    <button tuiButton appearance="flat" type="button">{{ address | async }}</button>
+  </app-copied-content>
   <div ngProjectAs="body">
     test text
   </div>

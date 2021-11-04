@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from "@angular/router";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: 'app-wallet',
@@ -9,8 +11,11 @@ import { Component, OnInit } from '@angular/core';
   }
 })
 export class WalletComponent implements OnInit {
+  public readonly address = this.route.params.pipe(map(({ address }) => address as string));
 
-  constructor() { }
+  constructor(
+    private readonly route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
   }
