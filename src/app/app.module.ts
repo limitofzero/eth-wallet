@@ -5,6 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { WalletModule } from "./wallet/wallet.module";
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { AppComponent } from './app.component';
       TuiRootModule,
       BrowserAnimationsModule,
       TuiDialogModule,
-      TuiNotificationsModule
+      TuiNotificationsModule,
+    WalletModule,
 ],
   providers: [],
   bootstrap: [AppComponent]
