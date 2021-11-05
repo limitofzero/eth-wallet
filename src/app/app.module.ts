@@ -1,5 +1,5 @@
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { TuiDialogModule, TuiNotificationsModule, TuiRootModule } from "@taiga-ui/core";
+import { TUI_SANITIZER, TuiDialogModule, TuiNotificationsModule, TuiRootModule } from "@taiga-ui/core";
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { WalletModule } from "./wallet/wallet.module";
 import { WEB3 } from "../web3/web3.token";
 import Web3 from "web3";
+import { NgDompurifySanitizer } from "@tinkoff/ng-dompurify";
 
 function web3Factory(): Web3 {
   return new Web3('ws://127.0.0.1:8546');
@@ -27,6 +28,10 @@ function web3Factory(): Web3 {
     WalletModule,
 ],
   providers: [
+    {
+      provide: TUI_SANITIZER,
+      useClass: NgDompurifySanitizer,
+    },
     {
       provide: WEB3,
       useFactory: web3Factory
