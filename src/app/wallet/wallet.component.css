@@ -2,16 +2,8 @@
   display: block;
 }
 
-
-.coin-pic {
+.action-panel {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin: 0 1.5rem;
-  background: var(--tui-secondary-active);
-  border-radius: 100%;
-  width: 3rem;
-  height: 3rem;
-  color: var(--tui-text-03);
+  justify-content: end;
+  margin-top: 1rem;
 }

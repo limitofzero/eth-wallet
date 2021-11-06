@@ -1,0 +1,11 @@
+<tui-accordion>
+  <tui-accordion-item [showArrow]="false">
+    <div class="d-flex d-align-center">
+      <div class="operation-pic">
+        <tui-svg class="coin-pic" [src]="'/assets/img/ethereum-eth.svg'"></tui-svg>
+      </div>
+
+      {{ balance | async | eth }} ETH
+    </div>
+  </tui-accordion-item>
+</tui-accordion>

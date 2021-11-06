@@ -3,17 +3,12 @@
     <button tuiButton appearance="flat" type="button">{{ address | async }}</button>
   </app-copied-content>
   <div ngProjectAs="body">
-    <tui-accordion>
-      <tui-accordion-item [showArrow]="false">
-        <div class="d-flex d-align-center">
-          <div class="operation-pic">
-            <tui-svg class="coin-pic" [src]="'/assets/img/ethereum-eth.svg'"></tui-svg>
-          </div>
+    <router-outlet></router-outlet>
 
-          {{ balance | async | eth }} ETH
-        </div>
-      </tui-accordion-item>
-    </tui-accordion>
-
+    <div class="action-panel">
+      <a routerLink="withdraw">
+        <button tuiButton> withdraw </button>
+      </a>
+    </div>
   </div>
 </app-card>

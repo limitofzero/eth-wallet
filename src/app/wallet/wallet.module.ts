@@ -3,14 +3,12 @@ import { CommonModule } from '@angular/common';
 import { WalletComponent } from './wallet.component';
 import { CardModule } from "../ui/card/card.module";
 import { CopiedContentModule } from "../ui/copied-content/copied-content.module";
-import { TuiButtonModule, TuiSvgModule } from "@taiga-ui/core";
-import { EthPipeModule } from "../ui/eth-pipe/eth-pipe.module";
-import { TuiAccordionModule } from "@taiga-ui/kit";
+import { TuiButtonModule } from "@taiga-ui/core";
+import { RouterModule } from "@angular/router";
 
 
 @NgModule({
   declarations: [
-
     WalletComponent
   ],
   imports: [
@@ -18,9 +16,22 @@ import { TuiAccordionModule } from "@taiga-ui/kit";
     CardModule,
     CopiedContentModule,
     TuiButtonModule,
-    EthPipeModule,
-    TuiAccordionModule,
-    TuiSvgModule
+    RouterModule.forChild([
+      {
+        path: '',
+        component: WalletComponent,
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('./balance/balance.module').then(m => m.BalanceModule),
+          },
+          {
+            path: 'withdraw',
+            loadChildren: () => import('./transfer-money/transfer-money.module').then(m => m.TransferMoneyModule),
+          }
+        ]
+      }
+    ])
   ]
 })
 export class WalletModule { }
