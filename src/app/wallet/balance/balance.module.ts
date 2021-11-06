@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BalanceComponent } from './balance.component';
 import { TuiAccordionModule } from "@taiga-ui/kit";
-import { TuiSvgModule } from "@taiga-ui/core";
+import { TuiButtonModule, TuiSvgModule } from "@taiga-ui/core";
 import { EthPipeModule } from "../../ui/eth-pipe/eth-pipe.module";
 import { RouterModule } from "@angular/router";
 
@@ -22,7 +22,8 @@ import { RouterModule } from "@angular/router";
         path: '',
         component: BalanceComponent,
       }
-    ])
+    ]),
+    TuiButtonModule
   ]
 })
 export class BalanceModule { }

@@ -1,0 +1,14 @@
+.transfer-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.transfer-form > tui-input, tui-input-number {
+  margin-top: 1rem;
+}
+
+.action-panel {
+  display: flex;
+  justify-content: end;
+  margin-top: 1rem;
+}

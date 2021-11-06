@@ -10,3 +10,9 @@
   height: 3rem;
   color: var(--tui-text-03);
 }
+
+.action-panel {
+  display: flex;
+  justify-content: end;
+  margin-top: 1rem;
+}

@@ -1,0 +1,9 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <tui-input formControlName="key">
+    Private key:
+  </tui-input>
+
+  <div class="action-panel">
+    <button tuiButton type="submit"> Sign </button>
+  </div>
+</form>

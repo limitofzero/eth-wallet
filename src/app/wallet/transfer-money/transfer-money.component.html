@@ -1,1 +1,18 @@
-<p>transfer-money works!</p>
+<form class="transfer-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <tui-input formControlName="from">
+    From:
+  </tui-input>
+  <tui-input formControlName="to">
+    To:
+  </tui-input>
+  <tui-input-number formControlName="value">
+    Value:
+  </tui-input-number>
+  <tui-input-number formControlName="gas">
+    GAS:
+  </tui-input-number>
+
+  <div class="action-panel">
+    <button tuiButton type="submit"> Withdraw </button>
+  </div>
+</form>
