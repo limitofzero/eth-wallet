@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { TuiDialogService } from "@taiga-ui/core";
 import { PolymorpheusComponent } from "@tinkoff/ng-polymorpheus";
 import { SignTxComponent } from "./sign-tx/sign-tx.component";
@@ -70,10 +70,18 @@ export class TransferMoneyComponent implements OnInit {
   private createForm(): FormGroup {
     return this.fb.group({
       from: ['', Validators.required],
-      to: ['', Validators.required],
+      to: ['', [Validators.required, this.isAddressValidator]],
       value: ['', Validators.required],
       gas: [''],
     })
   }
 
+  private isAddressValidator = (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (value && !this.web3.utils.isAddress(value)) {
+      return { 'incorrectAddress': true };
+    }
+
+    return null;
+  }
 }
