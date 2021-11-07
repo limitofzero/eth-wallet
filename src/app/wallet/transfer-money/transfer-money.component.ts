@@ -6,16 +6,27 @@ import { SignTxComponent } from "./sign-tx/sign-tx.component";
 import { ActivatedRoute } from "@angular/router";
 import { WEB3 } from "../../../web3/web3.token";
 import Web3 from "web3";
-import { catchError, debounceTime, map, shareReplay, startWith, switchMap, withLatestFrom } from "rxjs/operators";
+import {
+  catchError,
+  debounceTime,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  takeUntil,
+  withLatestFrom
+} from "rxjs/operators";
 import { from, Observable, of } from "rxjs";
 import { TransactionConfig } from "web3-core";
 import BigNumber from "bignumber.js";
+import { TuiDestroyService } from "@taiga-ui/cdk";
 
 @Component({
   selector: 'app-transfer-money',
   templateUrl: './transfer-money.component.html',
   styleUrls: ['./transfer-money.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService],
 })
 export class TransferMoneyComponent implements OnInit {
   public readonly form: FormGroup;
@@ -37,6 +48,7 @@ export class TransferMoneyComponent implements OnInit {
     private readonly dialogService: TuiDialogService,
     private readonly injector: Injector,
     private readonly route: ActivatedRoute,
+    private readonly destroy: TuiDestroyService,
     @Inject(WEB3) private readonly web3: Web3,
   ) {
     this.form = this.createForm();
@@ -97,7 +109,6 @@ export class TransferMoneyComponent implements OnInit {
         if (gas) {
           const currentValue = this.form.get('value')?.value ?? '0';
           const asWei = this.web3.utils.toWei(currentValue.toString(), 'ether').toString();
-          console.log(asWei);
           return new BigNumber(asWei).plus(gas).toString();
         }
 
@@ -114,7 +125,8 @@ export class TransferMoneyComponent implements OnInit {
         const formData = { ...this.getTxConfigFromForm(), gas };
         return this.web3.eth.accounts.signTransaction(formData, key);
       }),
-      switchMap(tx => this.web3.eth.sendSignedTransaction(tx.rawTransaction as string))
+      switchMap(tx => this.web3.eth.sendSignedTransaction(tx.rawTransaction as string)),
+      takeUntil(this.destroy),
     ).subscribe({
       next: (result) => {
         console.log(result)
