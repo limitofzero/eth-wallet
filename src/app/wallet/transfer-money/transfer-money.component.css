@@ -3,8 +3,14 @@
   flex-direction: column;
 }
 
-.transfer-form > tui-input, tui-input-number {
+.transfer-form > tui-input, tui-input-number, .current-balance  {
   margin-top: 1rem;
+}
+
+.current-balance {
+  font-size: 1.25rem;
+  display: flex;
+  justify-content: space-between;
 }
 
 .action-panel {

@@ -5,12 +5,20 @@
   <tui-input formControlName="to">
     To:
   </tui-input>
-  <tui-input-number formControlName="value">
+
+  <div class="current-balance">
+    <span class="current-balance_label">Current balance: </span>
+    <span class="current-balance_value">{{ balance | async | eth }} ETH</span>
+  </div>
+
+  <tui-input-number formControlName="value" postfix="ETH" [precision]="18">
     Value:
   </tui-input-number>
-  <tui-input-number formControlName="gas">
-    GAS:
-  </tui-input-number>
+
+  <div class="current-balance">
+    <span class="current-balance_label">GAS: </span>
+    <span class="current-balance_value">{{ gas | async | eth }} ETH</span>
+  </div>
 
   <div class="action-panel">
     <button tuiButton type="submit"> Withdraw </button>

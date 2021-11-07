@@ -6,7 +6,9 @@ import { SignTxComponent } from "./sign-tx/sign-tx.component";
 import { ActivatedRoute } from "@angular/router";
 import { WEB3 } from "../../../web3/web3.token";
 import Web3 from "web3";
-import { switchMap } from "rxjs/operators";
+import { catchError, debounceTime, map, startWith, switchMap } from "rxjs/operators";
+import { Observable, from, of } from "rxjs";
+import { TransactionConfig } from "web3-core";
 
 @Component({
   selector: 'app-transfer-money',
@@ -16,6 +18,9 @@ import { switchMap } from "rxjs/operators";
 })
 export class TransferMoneyComponent implements OnInit {
   public readonly form: FormGroup;
+  public readonly gas: Observable<string>;
+  public balance: Observable<string> | undefined;
+
 
   private readonly dialog = this.dialogService.open<{ key: string }>(
     new PolymorpheusComponent(SignTxComponent, this.injector),
@@ -33,13 +38,16 @@ export class TransferMoneyComponent implements OnInit {
     @Inject(WEB3) private readonly web3: Web3,
   ) {
     this.form = this.createForm();
+    this.gas = this.calculateGas();
   }
 
   ngOnInit(): void {
-    const from: string = this.route.parent?.parent?.snapshot.params['address'];
+    const address: string = this.route.parent?.parent?.snapshot.params['address'];
     const fromController = this.form.get('from');
-    fromController?.setValue(from, { emitEvent: false });
+    fromController?.setValue(address, { emitEvent: false });
     fromController?.disable();
+
+    this.balance = from(this.web3.eth.getBalance(address));
   }
 
 
@@ -51,10 +59,35 @@ export class TransferMoneyComponent implements OnInit {
     this.sendTransaction();
   }
 
+  private calculateGas(): Observable<string> {
+    const control = this.form.get('value');
+    if (!control) {
+      throw new Error('Control value is not defined');
+    }
+
+    return control.valueChanges.pipe(
+      debounceTime(500),
+      switchMap(() => {
+        if (this.form.valid) {
+          return from(this.web3.eth.estimateGas(this.getTxConfigFromForm())).pipe(
+            map(v => v.toString()),
+            catchError((err: unknown) => {
+              console.error(err);
+              return of('');
+            })
+          )
+        }
+
+        return of('');
+      }),
+      startWith(''),
+    )
+  }
+
   private sendTransaction(): void {
     this.dialog.pipe(
       switchMap(({ key }) => {
-        const formData = { ...this.form.getRawValue(), gasPrice: 1, nonce: 1 };
+        const formData = { ...this.getTxConfigFromForm(), gasPrice: 1, nonce: 1 };
         return this.web3.eth.accounts.signTransaction(formData, key);
       })
     ).subscribe({
@@ -67,12 +100,21 @@ export class TransferMoneyComponent implements OnInit {
     })
   }
 
+  private getTxConfigFromForm(): TransactionConfig {
+    const formValue = this.form.getRawValue();
+    return {
+      from: formValue.from,
+      to: formValue.to,
+      // todo use string field for value
+      value: this.web3.utils.toWei(formValue.value.toString(), 'ether')
+    }
+  }
+
   private createForm(): FormGroup {
     return this.fb.group({
       from: ['', Validators.required],
       to: ['', [Validators.required, this.isAddressValidator]],
       value: ['', Validators.required],
-      gas: [''],
     })
   }
 

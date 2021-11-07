@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { TuiInputModule, TuiInputNumberModule } from "@taiga-ui/kit";
 import { TuiButtonModule } from "@taiga-ui/core";
 import { SignTxModule } from "./sign-tx/sign-tx.module";
+import { EthPipeModule } from "../../ui/eth-pipe/eth-pipe.module";
 
 
 
@@ -25,7 +26,8 @@ import { SignTxModule } from "./sign-tx/sign-tx.module";
     TuiInputModule,
     TuiInputNumberModule,
     TuiButtonModule,
-    SignTxModule
+    SignTxModule,
+    EthPipeModule
   ]
 })
 export class TransferMoneyModule { }
