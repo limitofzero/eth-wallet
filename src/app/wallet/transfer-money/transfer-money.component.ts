@@ -6,8 +6,8 @@ import { SignTxComponent } from "./sign-tx/sign-tx.component";
 import { ActivatedRoute } from "@angular/router";
 import { WEB3 } from "../../../web3/web3.token";
 import Web3 from "web3";
-import { catchError, debounceTime, map, shareReplay, startWith, switchMap, tap } from "rxjs/operators";
-import { Observable, from, of } from "rxjs";
+import { catchError, debounceTime, map, shareReplay, startWith, switchMap, withLatestFrom } from "rxjs/operators";
+import { from, Observable, of } from "rxjs";
 import { TransactionConfig } from "web3-core";
 import BigNumber from "bignumber.js";
 
@@ -104,16 +104,17 @@ export class TransferMoneyComponent implements OnInit {
         return '';
       }),
       startWith(''),
-      tap(console.log)
     );
   }
 
   private sendTransaction(): void {
     this.dialog.pipe(
-      switchMap(({ key }) => {
-        const formData = { ...this.getTxConfigFromForm(), gasPrice: 1, nonce: 1 };
+      withLatestFrom(this.gas),
+      switchMap(([{ key }, gas]) => {
+        const formData = { ...this.getTxConfigFromForm(), gas };
         return this.web3.eth.accounts.signTransaction(formData, key);
-      })
+      }),
+      switchMap(tx => this.web3.eth.sendSignedTransaction(tx.rawTransaction as string))
     ).subscribe({
       next: (result) => {
         console.log(result)
