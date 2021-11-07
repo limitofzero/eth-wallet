@@ -6,9 +6,10 @@ import { SignTxComponent } from "./sign-tx/sign-tx.component";
 import { ActivatedRoute } from "@angular/router";
 import { WEB3 } from "../../../web3/web3.token";
 import Web3 from "web3";
-import { catchError, debounceTime, map, startWith, switchMap } from "rxjs/operators";
+import { catchError, debounceTime, map, shareReplay, startWith, switchMap, tap } from "rxjs/operators";
 import { Observable, from, of } from "rxjs";
 import { TransactionConfig } from "web3-core";
+import BigNumber from "bignumber.js";
 
 @Component({
   selector: 'app-transfer-money',
@@ -19,6 +20,7 @@ import { TransactionConfig } from "web3-core";
 export class TransferMoneyComponent implements OnInit {
   public readonly form: FormGroup;
   public readonly gas: Observable<string>;
+  public readonly total: Observable<string>;
   public balance: Observable<string> | undefined;
 
 
@@ -39,6 +41,7 @@ export class TransferMoneyComponent implements OnInit {
   ) {
     this.form = this.createForm();
     this.gas = this.calculateGas();
+    this.total = this.calculateTotal();
   }
 
   ngOnInit(): void {
@@ -81,7 +84,28 @@ export class TransferMoneyComponent implements OnInit {
         return of('');
       }),
       startWith(''),
+      shareReplay({
+        bufferSize: 1,
+        refCount: true,
+      })
     )
+  }
+
+  public calculateTotal(): Observable<string> {
+    return this.gas.pipe(
+      map(gas => {
+        if (gas) {
+          const currentValue = this.form.get('value')?.value ?? '0';
+          const asWei = this.web3.utils.toWei(currentValue.toString(), 'ether').toString();
+          console.log(asWei);
+          return new BigNumber(asWei).plus(gas).toString();
+        }
+
+        return '';
+      }),
+      startWith(''),
+      tap(console.log)
+    );
   }
 
   private sendTransaction(): void {

@@ -20,6 +20,11 @@
     <span class="current-balance_value">{{ gas | async | eth }} ETH</span>
   </div>
 
+  <div class="current-balance">
+    <span class="current-balance_label">Total: </span>
+    <span class="current-balance_value">{{ total | async | eth }} ETH</span>
+  </div>
+
   <div class="action-panel">
     <button tuiButton type="submit"> Withdraw </button>
   </div>
